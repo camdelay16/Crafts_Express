@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const { User } = require("../models/user");
+const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 
 const verifyToken = require("../middlewares/verify-token");
@@ -12,7 +12,7 @@ router.post("/signup", async (req, res) => {
   try {
     const userInDatabase = await User.findOne({ username: req.body.username });
     if (userInDatabase) {
-      return res.json({ error: "Username already taken." });
+      return res.status(400).json({ error: "Username already taken." });
     }
     const user = await User.create({
       username: req.body.username,
@@ -23,6 +23,7 @@ router.post("/signup", async (req, res) => {
       { username: user.username, _id: user._id },
       process.env.JWT_SECRET
     );
+    console.log("User created successfully.");
     res.status(201).json({ user, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -32,7 +33,11 @@ router.post("/signup", async (req, res) => {
 router.post("/signin", async (req, res) => {
   try {
     const user = await User.findOne({ username: req.body.username });
-    if (user && bcrypt.compareSync(req.body.password, user.hashedPassword)) {
+    const password = await bcrypt.compareSync(
+      req.body.password,
+      user.hashedPassword
+    );
+    if (user && password) {
       const token = jwt.sign(
         { username: user.username, _id: user._id },
         process.env.JWT_SECRET
@@ -48,30 +53,41 @@ router.post("/signin", async (req, res) => {
 
 router.get("/:userId", verifyToken, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    const user = await User.findById(req.params.userId);
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(401).json({ error: "User not found." });
+    }
+  } catch {
+    res.status(400).json({ error: error.message });
   }
 });
 
 router.put("/:userId", verifyToken, async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.userId, req.body, {
-      new: true,
-    });
-    res.status(200).json(user);
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      req.body,
+      { new: true }
+    );
+    res.status(200).json(updatedUser);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json(error);
   }
 });
 
 router.delete("/:userId", verifyToken, async (req, res) => {
   try {
-    await User.findByIdAndDelete(req.params.userId);
-    res.status(200).json({ message: "User deleted successfully" });
+    const deletedUser = await User.findByIdAndDelete(req.params.userId);
+    const user = await User.findOne({ username: req.body.username });
+    if (user) {
+      res.status(200).json(deletedUser);
+    } else {
+      res.status(401).json({ error: "Invalid username or password." });
+    }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json(error);
   }
 });
 
