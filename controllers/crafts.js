@@ -25,9 +25,13 @@ router.get("/:craftId", async (req, res) => {
   }
 });
 
+router.use(verifyToken);
+
 router.post("/", async (req, res) => {
   try {
+    req.body.author = req.user._id;
     const craft = await Craft.create(req.body);
+    craft._doc.author = req.user;
     res.status(201).json(craft);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -47,8 +51,12 @@ router.put("/:craftId", async (req, res) => {
 
 router.delete("/:craftId", async (req, res) => {
   try {
-    await Craft.findByIdAndDelete(req.params.craftId);
-    res.status(200).json({ message: "Craft deleted successfully" });
+    const craft = await Craft.findById(req.params.craftId);
+    if (craft.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    const deletedCraft = await Craft.findByIdAndDelete(req.params.craftId);
+    res.status(200).json(deletedCraft);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
