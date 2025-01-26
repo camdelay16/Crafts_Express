@@ -2,6 +2,7 @@ const { Schema } = require("mongoose");
 
 const Craft = new Schema(
   {
+    author: { type: Schema.Types.ObjectId, ref: "user_id" },
     craftName: { type: String, required: true },
     craftType_id: { type: Schema.Types.ObjectId, ref: "Types" },
     tagline: { type: String, required: true },
