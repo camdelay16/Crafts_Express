@@ -8,11 +8,7 @@ const User = new Schema(
     // isAdmin: { type: Boolean, required: true },
     // userImg: { type: String, required: true },
     // userBio: { type: String, required: true },
-    userCrafts: [
-      {
-        craft_id: { type: Schema.Types.ObjectId, ref: "Craft" },
-      },
-    ],
+    userCrafts: [{ type: Schema.Types.ObjectId, ref: "Craft" }],
     userReviews: [
       {
         craft_id: { type: Schema.Types.ObjectId, ref: "Craft" },
