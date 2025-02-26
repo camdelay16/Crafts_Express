@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import logger from "morgan";
 import bodyParser from "body-parser";
-import db from "./db.js";
+import db from "./db/index.js";
 import craftsRouter from "./controllers/crafts.js";
 import typesRouter from "./controllers/types.js";
 import userRouter from "./controllers/users.js";
