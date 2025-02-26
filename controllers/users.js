@@ -1,10 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const bcrypt = require("bcrypt");
-const { User } = require("../models");
-const jwt = require("jsonwebtoken");
+import express from "express";
+import bcrypt from "bcrypt";
+import { User } from "../models";
+import jwt from "jsonwebtoken";
+import verifyToken from "../middlewares/verify-token";
 
-const verifyToken = require("../middlewares/verify-token");
+const router = express.Router();
 
 const SALT_LENGTH = 12;
 
@@ -14,9 +14,14 @@ router.post("/signup", async (req, res) => {
     if (userInDatabase) {
       return res.status(400).json({ error: "Username already taken." });
     }
+    const hashedPassword = await bcrypt.hashSync(
+      req.body.password,
+      SALT_LENGTH
+    );
+
     const user = await User.create({
       username: req.body.username,
-      hashedPassword: bcrypt.hashSync(req.body.password, SALT_LENGTH),
+      hashedPassword: hashedPassword,
       email: req.body.email,
     });
     const token = jwt.sign(
@@ -91,4 +96,4 @@ router.delete("/:userId", verifyToken, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

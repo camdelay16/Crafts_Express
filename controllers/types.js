@@ -1,7 +1,8 @@
-const express = require("express");
-const verifyToken = require("../middlewares/verify-token.js");
+import express from "express";
+import verifyToken from "../middlewares/verify-token.js";
+import { Type } from "../models/index.js";
+
 const router = express.Router();
-const { Type } = require("../models");
 
 router.get("/", async (req, res) => {
   try {
@@ -52,4 +53,4 @@ router.delete("/:typeId", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

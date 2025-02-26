@@ -1,6 +1,6 @@
-const { Schema } = require("mongoose");
+import mongoose, { Schema } from "mongoose";
 
-const Type = new Schema(
+const TypeSchema = new Schema(
   {
     craftType: { type: String, required: true },
     description: { type: String, required: true },
@@ -8,4 +8,4 @@ const Type = new Schema(
   { timestamps: true }
 );
 
-module.exports = Type;
+export default TypeSchema;

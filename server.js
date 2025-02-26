@@ -1,13 +1,14 @@
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 dotenv.config();
-const express = require("express");
-const cors = require("cors");
-const logger = require("morgan");
-const bodyParser = require("body-parser");
-const db = require("./db");
-const craftsRouter = require("./controllers/crafts");
-const typesRouter = require("./controllers/types");
-const userRouter = require("./controllers/users");
+import express from "express";
+import cors from "cors";
+import logger from "morgan";
+import bodyParser from "body-parser";
+import db from "./db.js";
+import craftsRouter from "./controllers/crafts.js";
+import typesRouter from "./controllers/types.js";
+import userRouter from "./controllers/users.js";
+
 const PORT = process.env.PORT || 3000;
 const app = express();
 

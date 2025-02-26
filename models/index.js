@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const CraftSchema = require("./craft");
-const UserSchema = require("./user");
-const TypeSchema = require("./type");
+import mongoose from "mongoose";
+import CraftSchema from "./craft.js";
+import UserSchema from "./user.js";
+import TypeSchema from "./type.js";
 
 const Craft = mongoose.model("Craft", CraftSchema);
 const User = mongoose.model("User", UserSchema);
@@ -13,8 +13,4 @@ UserSchema.set("toJSON", {
   },
 });
 
-module.exports = {
-  Craft,
-  User,
-  Type,
-};
+export { Craft, User, Type };

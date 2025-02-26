@@ -1,7 +1,8 @@
-const express = require("express");
-const verifyToken = require("../middlewares/verify-token.js");
+import express from "express";
+import verifyToken from "../middlewares/verify-token.js";
+import { Craft } from "../models/index.js";
+
 const router = express.Router();
-const { Craft } = require("../models");
 
 router.get("/", async (req, res) => {
   try {
@@ -62,4 +63,4 @@ router.delete("/:craftId", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

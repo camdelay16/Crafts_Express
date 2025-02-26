@@ -1,6 +1,6 @@
-const { Schema } = require("mongoose");
+import mongoose, { Schema } from "mongoose";
 
-const Craft = new Schema(
+const CraftSchema = new Schema(
   {
     author: { type: Schema.Types.ObjectId, ref: "user_id" },
     craftName: { type: String, required: true },
@@ -41,4 +41,4 @@ const Craft = new Schema(
   { timestamps: true }
 );
 
-module.exports = Craft;
+export default CraftSchema;
